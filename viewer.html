@@ -286,6 +286,39 @@
             color: var(--foreground-muted);
         }
 
+        .article-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 12px;
+            background: var(--background-secondary);
+            color: var(--foreground-muted);
+            text-transform: capitalize;
+        }
+
+        .tag-tech {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .tag-farming {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .tag-economic {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
         .article-link {
             flex-shrink: 0;
         }
@@ -358,6 +391,21 @@
             background: var(--background-secondary);
             border-radius: var(--radius);
             border: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-stat {
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .filter-stat:hover {
+            background: var(--border);
         }
 
         .refresh-btn {
@@ -452,11 +500,125 @@
             height: 14px;
         }
 
+        .source-filter {
+            padding: 8px 32px 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background-color: var(--background-secondary);
+            color: var(--foreground);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            height: 34px;
+        }
+
+        .source-filter:hover {
+            border-color: var(--border-hover);
+        }
+
+        .source-filter:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 112, 173, 0.1);
+        }
+
+        .filter-buttons {
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px;
+            background: var(--background-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--foreground-muted);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .filter-btn:hover {
+            color: var(--foreground);
+        }
+
+        .filter-btn.active {
+            background: var(--background);
+            color: var(--foreground);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .filter-count {
+            font-size: 11px;
+            background: var(--border);
+            padding: 1px 5px;
+            border-radius: 10px;
+            color: var(--foreground-muted);
+        }
+
+        .filter-btn.active .filter-count {
+            background: var(--primary);
+            color: white;
+        }
+
+        body.split-mode {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.split-mode header {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        body.split-mode main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
         .split-container {
             display: flex;
-            height: calc(100vh - 89px);
+            flex: 1;
+            height: 100%;
             overflow: hidden;
             contain: strict;
+        }
+
+        .sidebar {
+            overflow: visible;
+        }
+
+        .sidebar-content {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .main-content {
+            overflow: visible;
+        }
+
+        .main-content-body {
+            height: calc(100vh - 140px);
+            overflow: hidden;
         }
 
         .sidebar {
@@ -467,12 +629,14 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow: visible;
         }
 
         .sidebar-header {
             padding: 16px;
             border-bottom: 1px solid var(--border);
             background: var(--background-secondary);
+            flex-shrink: 0;
         }
 
         .sidebar-title {
@@ -480,11 +644,18 @@
             font-weight: 600;
             color: var(--foreground);
             margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .sidebar-subtitle {
             font-size: 12px;
             color: var(--foreground-muted);
+            overflow: visible;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.4;
         }
 
         .sidebar-content {
@@ -507,6 +678,7 @@
             align-items: center;
             justify-content: space-between;
             background: var(--background-secondary);
+            gap: 16px;
         }
 
         .main-content-title {
@@ -517,11 +689,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             flex: 1;
+            min-width: 0;
         }
 
         .main-content-actions {
             display: flex;
             gap: 8px;
+            flex-shrink: 0;
         }
 
         .main-content-body {
@@ -538,6 +712,33 @@
             border: none;
             display: block;
             contain: content;
+        }
+
+        .iframe-warning {
+            background-color: #fffbeb;
+            color: #b45309;
+            padding: 8px 16px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-bottom: 1px solid #fde68a;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .iframe-warning a {
+            color: #b45309;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .iframe-warning a:hover {
+            color: #92400e;
         }
 
         .content-placeholder {
@@ -640,6 +841,15 @@
                     <span class="logo-text">Government & Policy News</span>
                 </div>
                 <div class="controls">
+                    <select id="sourceFilter" class="source-filter" title="Filter by source">
+                        <option value="all">All Sources</option>
+                    </select>
+                    <div class="filter-buttons" id="filterButtons">
+                        <button class="filter-btn active" data-filter="all">All <span class="filter-count" id="count-all"></span></button>
+                        <button class="filter-btn" data-filter="tech">Tech <span class="filter-count" id="count-tech"></span></button>
+                        <button class="filter-btn" data-filter="farming">Farming <span class="filter-count" id="count-farming"></span></button>
+                        <button class="filter-btn" data-filter="economic">Economic <span class="filter-count" id="count-economic"></span></button>
+                    </div>
                     <div class="view-toggle" id="viewToggle">
                         <button class="view-toggle-btn active" id="viewList" title="List View">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -694,6 +904,10 @@
                     </div>
                 </div>
                 <div class="main-content-body" id="mainContentBody">
+                    <div class="iframe-warning" id="iframeWarning" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Some websites block previewing. If the page is blank, <a href="#" id="warningOpenLink" target="_blank">open it in a new tab</a>.
+                    </div>
                     <div class="content-placeholder" id="contentPlaceholder">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                         <h3>Select an article</h3>
@@ -709,6 +923,8 @@
         let currentFileName = '';
         let currentArticles = [];
         let viewMode = localStorage.getItem('viewMode') || 'list';
+        let currentFilter = localStorage.getItem('currentFilter') || 'all';
+        let currentSourceFilter = localStorage.getItem('currentSourceFilter') || 'all';
         let currentUrl = '';
         let currentTitle = '';
 
@@ -725,10 +941,50 @@
         const mainContentTitle = document.getElementById('mainContentTitle');
         const mainContentFrame = document.getElementById('mainContentFrame');
         const contentPlaceholder = document.getElementById('contentPlaceholder');
+        const iframeWarning = document.getElementById('iframeWarning');
+        const warningOpenLink = document.getElementById('warningOpenLink');
         const refreshBtn = document.getElementById('refreshBtn');
         const openNewTabBtn = document.getElementById('openNewTabBtn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const sourceFilterSelect = document.getElementById('sourceFilter');
 
         const main = document.querySelector('main');
+        
+        function initFilter() {
+            filterButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === currentFilter);
+            });
+            sourceFilterSelect.value = currentSourceFilter;
+        }
+        
+        function setFilter(filter) {
+            currentFilter = filter;
+            localStorage.setItem('currentFilter', filter);
+            initFilter();
+            if (currentArticles.length > 0) {
+                renderArticles(currentArticles, currentFileName);
+            }
+        }
+
+        function setSourceFilter(source) {
+            currentSourceFilter = source;
+            localStorage.setItem('currentSourceFilter', source);
+            if (currentArticles.length > 0) {
+                renderArticles(currentArticles, currentFileName);
+            }
+        }
+        
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setFilter(btn.dataset.filter);
+            });
+        });
+
+        sourceFilterSelect.addEventListener('change', (e) => {
+            setSourceFilter(e.target.value);
+        });
+        
+        initFilter();
         
         function initViewMode() {
             if (viewMode === 'split') {
@@ -736,17 +992,13 @@
                 viewSplit.classList.add('active');
                 content.style.display = 'none';
                 splitView.style.display = 'flex';
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
-                main.style.paddingTop = '90px';
+                document.body.classList.add('split-mode');
             } else {
                 viewList.classList.add('active');
                 viewSplit.classList.remove('active');
                 content.style.display = 'block';
                 splitView.style.display = 'none';
-                document.documentElement.style.overflow = '';
-                document.body.style.overflow = '';
-                main.style.paddingTop = '48px';
+                document.body.classList.remove('split-mode');
             }
         }
 
@@ -768,14 +1020,15 @@
             if (viewMode !== 'split') toggleViewMode();
         });
 
-        function renderSidebar() {
-            if (!currentArticles || currentArticles.length === 0) {
+        function renderSidebar(articlesToRender) {
+            const articles = articlesToRender || currentArticles;
+            if (!articles || articles.length === 0) {
                 sidebarContent.innerHTML = '<div class="sidebar-empty">No articles loaded</div>';
                 return;
             }
 
             let html = '';
-            for (const section of currentArticles) {
+            for (const section of articles) {
                 for (const article of section.articles) {
                     const isActive = article.url === currentUrl ? 'active' : '';
                     html += `
@@ -803,6 +1056,11 @@
             
             mainContentTitle.textContent = title || 'Loading...';
             contentPlaceholder.style.display = 'none';
+            iframeWarning.style.display = 'flex';
+            warningOpenLink.href = url;
+            
+            // Adjust frame top padding to make room for warning banner
+            mainContentFrame.style.paddingTop = '36px';
             mainContentFrame.style.display = 'block';
             mainContentFrame.src = url;
 
@@ -810,9 +1068,9 @@
                 el.classList.toggle('active', el.dataset.url === url);
             });
 
-            const baseName = getBaseFilename(currentFileName);
-            const fileType = baseName.startsWith('filtered') ? 'Filtered' : 'All';
-            sidebarSubtitle.textContent = `${fileType} articles`;
+            const filterLabels = { all: 'All', tech: 'Tech', farming: 'Farming', economic: 'Economic' };
+            const filterLabel = filterLabels[currentFilter] || 'All';
+            sidebarSubtitle.textContent = `${filterLabel} articles`;
         }
 
         refreshBtn.addEventListener('click', () => {
@@ -885,15 +1143,32 @@
                     pendingArticle = {
                         title: linkMatch[1],
                         url: linkMatch[2],
-                        source: ''
+                        source: '',
+                        tags: []
                     };
                     continue;
                 }
                 
                 // Check for source on following lines (indented lines after link)
-                if (pendingArticle && trimmedLine.match(/^\*Source:\s+(.+)$/)) {
-                    const sourceMatch = trimmedLine.match(/^\*Source:\s+(.+)$/);
-                    pendingArticle.source = sourceMatch[1];
+                if (pendingArticle && trimmedLine.match(/^\*Source:/)) {
+                    const sourceMatch = trimmedLine.match(/^\*Source:\s+(.+?)\*?$/);
+                    if (sourceMatch) {
+                        pendingArticle.source = sourceMatch[1].replace(/\*$/, '').trim();
+                    }
+                }
+                
+                // Check for tags on following lines (indented lines after link)
+                if (pendingArticle && trimmedLine.match(/^\*Tags:/)) {
+                    const tagsMatch = trimmedLine.match(/^\*Tags:\s+(.+?)\*?$/);
+                    if (tagsMatch) {
+                        pendingArticle.tags = tagsMatch[1].split(',').map(t => t.replace(/\*$/, '').trim().toLowerCase());
+                        console.log('TAGS PARSED:', pendingArticle.title, '->', pendingArticle.tags);
+                    }
+                }
+                
+                // Debug: log lines that might be tags but aren't matching
+                if (pendingArticle && trimmedLine.includes('Tag')) {
+                    console.log('LINE WITH TAG:', JSON.stringify(trimmedLine));
                 }
             }
 
@@ -905,7 +1180,7 @@
                 articles.push({ date: currentDate, articles: currentArticles });
             }
 
-            console.log('Parsed articles:', articles);
+            console.log('Parsed articles:', JSON.stringify(articles, null, 2));
             return articles;
         }
 
@@ -915,7 +1190,6 @@
 
         function renderArticles(articles, filename = '', preview = '') {
             const baseName = getBaseFilename(filename);
-            const fileType = baseName.startsWith('filtered') ? 'Filtered' : 'All';
             
             if (!articles || articles.length === 0) {
                 content.innerHTML = `
@@ -933,10 +1207,69 @@ ${preview}</pre>
                 return;
             }
 
-            let html = `<div class="current-file">Showing: ${fileType} articles</div>`;
-            html += '<div class="articles-list">';
+            // Store all articles for export
+            currentArticles = articles;
             
-            for (const section of articles) {
+            // Extract unique sources and update dropdown
+            const uniqueSources = new Set();
+            articles.forEach(section => {
+                section.articles.forEach(article => {
+                    if (article.source) uniqueSources.add(article.source);
+                });
+            });
+            
+            // Rebuild source dropdown options
+            const sourcesList = Array.from(uniqueSources).sort();
+            let optionsHtml = '<option value="all">All Sources</option>';
+            sourcesList.forEach(source => {
+                const selected = source === currentSourceFilter ? 'selected' : '';
+                optionsHtml += `<option value="${source}" ${selected}>${source}</option>`;
+            });
+            sourceFilterSelect.innerHTML = optionsHtml;
+            
+            // Filter articles based on currentFilter AND currentSourceFilter
+            let filteredArticles = articles;
+            
+            filteredArticles = articles.map(section => {
+                const matchedArticles = section.articles.filter(article => {
+                    const matchesCategory = currentFilter === 'all' || (article.tags && article.tags.includes(currentFilter));
+                    const matchesSource = currentSourceFilter === 'all' || article.source === currentSourceFilter;
+                    return matchesCategory && matchesSource;
+                });
+                
+                return {
+                    date: section.date,
+                    articles: matchedArticles
+                };
+            }).filter(section => section.articles.length > 0);
+
+            console.log('Filtered articles:', filteredArticles.length);
+
+            const filterLabels = { all: 'All', tech: 'Tech', farming: 'Farming', economic: 'Economic' };
+            const filterLabel = filterLabels[currentFilter] || 'All';
+            const articleCount = filteredArticles.reduce((sum, s) => sum + s.articles.length, 0);
+            
+            // For counts, we should only show the counts for the currently selected source
+            const sourceFilteredArticles = currentSourceFilter === 'all' 
+                ? articles 
+                : articles.map(s => ({...s, articles: s.articles.filter(a => a.source === currentSourceFilter)}));
+                
+            const totalArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.length, 0);
+            const techArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('tech')).length, 0);
+            const farmArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('farming')).length, 0);
+            const econArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('economic')).length, 0);
+            
+            // Update filter button counts
+            document.getElementById('count-all').textContent = totalArticles;
+            document.getElementById('count-tech').textContent = techArticles;
+            document.getElementById('count-farming').textContent = farmArticles;
+            document.getElementById('count-economic').textContent = econArticles;
+            
+            let html = '<div class="articles-list">';
+            
+            for (const section of filteredArticles) {
+                if (section.articles.length === 0) continue;
+                
                 html += `
                     <div class="date-section">
                         <div class="date-header">${formatDate(section.date)}</div>
@@ -944,6 +1277,9 @@ ${preview}</pre>
                 `;
                 
                 for (const article of section.articles) {
+                    const tagsHtml = article.tags && article.tags.length > 0 
+                        ? `<div class="article-tags">${article.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}</div>` 
+                        : '';
                     html += `
                         <div class="article-item">
                             <div class="article-content">
@@ -951,6 +1287,7 @@ ${preview}</pre>
                                     <a href="${article.url}" target="_blank" rel="noopener">${article.title}</a>
                                 </div>
                                 <div class="article-meta">${article.source}</div>
+                                ${tagsHtml}
                             </div>
                             <div class="article-link">
                                 <a href="${article.url}" target="_blank" rel="noopener">
@@ -967,13 +1304,10 @@ ${preview}</pre>
             
             html += '</div>';
             content.innerHTML = html;
-            
-            // Store articles for export
-            currentArticles = articles;
 
             // Render sidebar if in split view
             if (viewMode === 'split') {
-                renderSidebar();
+                renderSidebar(filteredArticles);
             }
         }
 
@@ -1018,14 +1352,18 @@ ${preview}</pre>
         .btn:hover { background: var(--background-secondary); border-color: var(--border-hover); }
         .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
         .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+        .source-filter { padding: 6px 28px 6px 12px; font-size: 13px; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--border); background-color: var(--background-secondary); color: var(--foreground); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+        .source-filter:hover { border-color: var(--border-hover); }
+        body.split-mode { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body.split-mode .header { flex-shrink: 0; }
+        body.split-mode .split-container { display: flex; flex: 1; height: 100%; }
         .view-toggle { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: var(--background-secondary); border: 1px solid var(--border); border-radius: var(--radius); }
         .view-toggle-btn { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; font-size: 13px; border: none; background: transparent; color: var(--foreground-muted); border-radius: 4px; cursor: pointer; }
         .view-toggle-btn:hover { color: var(--foreground); }
         .view-toggle-btn.active { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .view-toggle-btn svg { width: 14px; height: 14px; }
         .container { max-width: 900px; margin: 0 auto; padding: 24px; }
-        .split-container { display: none; height: calc(100vh - 65px); overflow: hidden; contain: strict; }
-        .split-container.active { display: flex; }
+        .split-container { display: none; overflow: hidden; contain: strict; }
         .sidebar { width: 320px; min-width: 280px; border-right: 1px solid var(--border); background: var(--background); display: flex; flex-direction: column; height: 100%; }
         .sidebar-header { padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--background-secondary); }
         .sidebar-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
@@ -1038,11 +1376,14 @@ ${preview}</pre>
         .sidebar-article-meta { font-size: 12px; color: var(--foreground-muted); }
         .sidebar-empty { padding: 24px; text-align: center; color: var(--foreground-muted); font-size: 13px; }
         .main-content { flex: 1; display: flex; flex-direction: column; background: var(--background); }
-        .main-content-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--background-secondary); }
-        .main-content-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-        .main-content-actions { display: flex; gap: 8px; }
+        .main-content-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--background-secondary); gap: 16px; }
+        .main-content-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+        .main-content-actions { display: flex; gap: 8px; flex-shrink: 0; }
         .main-content-body { flex: 1; overflow: hidden; position: relative; height: calc(100vh - 115px); contain: strict; }
         .main-content-frame { width: 100%; height: 100%; border: none; display: block; contain: content; }
+        .iframe-warning { background-color: #fffbeb; color: #b45309; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 1px solid #fde68a; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+        .iframe-warning a { color: #b45309; font-weight: 600; text-decoration: underline; }
+        .iframe-warning a:hover { color: #92400e; }
         .content-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--foreground-muted); padding: 24px; text-align: center; }
         .content-placeholder svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
         .content-placeholder h3 { font-size: 16px; font-weight: 600; color: var(--foreground); margin-bottom: 8px; }
@@ -1074,6 +1415,9 @@ ${preview}</pre>
             <span class="logo-text">Government & Policy News - ${fileType}</span>
         </div>
         <div class="controls">
+            <select id="sourceFilter" class="source-filter" title="Filter by source">
+                <option value="all">All Sources</option>
+            </select>
             <div class="view-toggle" id="viewToggle">
                 <button class="view-toggle-btn active" id="viewList" title="List View">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -1112,6 +1456,10 @@ ${preview}</pre>
                 </div>
             </div>
             <div class="main-content-body" id="mainContentBody">
+                <div class="iframe-warning" id="iframeWarning" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Some websites block previewing. If the page is blank, <a href="#" id="warningOpenLink" target="_blank">open it in a new tab</a>.
+                </div>
                 <div class="content-placeholder" id="contentPlaceholder">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     <h3>Select an article</h3>
@@ -1125,6 +1473,7 @@ ${preview}</pre>
     <script>
         const articles = ${articlesJson};
         let viewMode = localStorage.getItem('viewMode') || 'list';
+        let currentSourceFilter = 'all';
         let currentUrl = '';
         
         const viewList = document.getElementById('viewList');
@@ -1137,6 +1486,29 @@ ${preview}</pre>
         const mainContentFrame = document.getElementById('mainContentFrame');
         const contentPlaceholder = document.getElementById('contentPlaceholder');
         const articlesList = document.getElementById('articlesList');
+        const sourceFilterSelect = document.getElementById('sourceFilter');
+        
+        // Extract unique sources and populate dropdown
+        const uniqueSources = new Set();
+        articles.forEach(section => {
+            section.articles.forEach(article => {
+                if (article.source) uniqueSources.add(article.source);
+            });
+        });
+        const sourcesList = Array.from(uniqueSources).sort();
+        let optionsHtml = '<option value="all">All Sources</option>';
+        sourcesList.forEach(source => {
+            optionsHtml += \`<option value="\${source}">\${source}</option>\`;
+        });
+        sourceFilterSelect.innerHTML = optionsHtml;
+        
+        sourceFilterSelect.addEventListener('change', (e) => {
+            currentSourceFilter = e.target.value;
+            renderList();
+            if (viewMode === 'split') {
+                renderSidebar();
+            }
+        });
         
         function formatDate(dateStr) {
             const date = new Date(dateStr);
@@ -1148,17 +1520,15 @@ ${preview}</pre>
                 viewList.classList.remove('active');
                 viewSplit.classList.add('active');
                 listView.style.display = 'none';
-                splitView.classList.add('active');
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
+                splitView.style.display = 'flex';
+                document.body.classList.add('split-mode');
                 renderSidebar();
             } else {
                 viewList.classList.add('active');
                 viewSplit.classList.remove('active');
                 listView.style.display = 'block';
-                splitView.classList.remove('active');
-                document.documentElement.style.overflow = '';
-                document.body.style.overflow = '';
+                splitView.style.display = 'none';
+                document.body.classList.remove('split-mode');
             }
         }
         
@@ -1174,24 +1544,40 @@ ${preview}</pre>
         function renderList() {
             let html = '';
             for (const section of articles) {
+                const filteredArticles = currentSourceFilter === 'all' 
+                    ? section.articles 
+                    : section.articles.filter(a => a.source === currentSourceFilter);
+                    
+                if (filteredArticles.length === 0) continue;
+                
                 html += '<div class="date-section"><div class="date-header">' + formatDate(section.date) + '</div><div class="articles">';
-                for (const article of section.articles) {
+                for (const article of filteredArticles) {
                     html += '<div class="article-item"><div class="article-content"><div class="article-title"><a href="' + article.url + '" target="_blank">' + article.title + '</a></div><div class="article-meta">' + article.source + '</div></div><div class="article-link"><a href="' + article.url + '" target="_blank">View</a></div></div>';
                 }
                 html += '</div></div>';
             }
+            if (html === '') html = '<div class="empty-state"><h2>No articles found</h2><p>Try changing your source filter.</p></div>';
             articlesList.innerHTML = html;
         }
         
         function renderSidebar() {
             let html = '';
+            let count = 0;
             for (const section of articles) {
-                for (const article of section.articles) {
+                const filteredArticles = currentSourceFilter === 'all' 
+                    ? section.articles 
+                    : section.articles.filter(a => a.source === currentSourceFilter);
+                    
+                for (const article of filteredArticles) {
+                    count++;
                     const isActive = article.url === currentUrl ? 'active' : '';
                     html += '<div class="sidebar-article ' + isActive + '" data-url="' + article.url + '" data-title="' + article.title.replace(/"/g, '&quot;') + '"><div class="sidebar-article-title">' + article.title + '</div><div class="sidebar-article-meta">' + article.source + '</div></div>';
                 }
             }
+            if (html === '') html = '<div class="sidebar-empty">No articles found</div>';
             sidebarContent.innerHTML = html;
+            sidebarSubtitle.textContent = count + ' articles';
+            
             document.querySelectorAll('.sidebar-article').forEach(el => {
                 el.addEventListener('click', () => {
                     loadArticleInFrame(el.dataset.url, el.dataset.title);
@@ -1203,12 +1589,16 @@ ${preview}</pre>
             currentUrl = url;
             mainContentTitle.textContent = title || 'Loading...';
             contentPlaceholder.style.display = 'none';
+            const iframeWarning = document.getElementById('iframeWarning');
+            const warningOpenLink = document.getElementById('warningOpenLink');
+            if (iframeWarning) iframeWarning.style.display = 'flex';
+            if (warningOpenLink) warningOpenLink.href = url;
+            mainContentFrame.style.paddingTop = '36px';
             mainContentFrame.style.display = 'block';
             mainContentFrame.src = url;
             document.querySelectorAll('.sidebar-article').forEach(el => {
                 el.classList.toggle('active', el.dataset.url === url);
             });
-            sidebarSubtitle.textContent = articles.length + ' articles';
         }
         
         document.getElementById('refreshBtn').addEventListener('click', () => {
@@ -1280,6 +1670,7 @@ ${preview}</pre>
                 sidebarSubtitle.textContent = 'Select an article to view';
                 mainContentTitle.textContent = 'Select an article';
                 contentPlaceholder.style.display = 'flex';
+                iframeWarning.style.display = 'none';
                 mainContentFrame.style.display = 'none';
                 mainContentFrame.src = '';
                 currentUrl = '';

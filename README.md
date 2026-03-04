@@ -1,212 +1,77 @@
 # UK Government & Policy News Scraper
 
-A Python script that scrapes articles from UK government and policy websites, filtering for tech, AI, and consultancy-themed content.
+A Python automation tool that scrapes, categorizes, and provides an interactive viewing experience for news articles from various UK government and policy websites.
 
-## Prerequisites
+## 🎯 What it is
 
-### 1. Install Python
+This project consists of two main components:
+1. **The Scraper (`scraper.py`)**: A Python script that crawls specific UK policy/government websites, extracts recent articles, and categorizes them based on keyword fuzzy matching.
+2. **The Viewer (`viewer.html`)**: A sleek, modern, standalone HTML application that reads the scraped markdown files and provides an interactive reading experience with filtering, split-screen viewing, and export capabilities.
 
-**Windows:**
-- Download Python from https://www.python.org/downloads/
-- During installation, check "Add Python to PATH"
-- Verify: Open Command Prompt and run `python --version`
+## ⚙️ Prerequisites
 
-**Mac:**
-- Install via Homebrew: `brew install python3`
-- Or download from https://www.python.org/downloads/
+- **Python 3.7+** installed on your system
+- Required Python packages:
+  ```bash
+  pip install requests beautifulsoup4 rapidfuzz
+  ```
 
-**Linux:**
-- Usually pre-installed. If not: `sudo apt install python3` (Ubuntu/Debian)
+## 🚀 How to Run
 
-### 2. Install Dependencies
+1. **Scrape the latest news:**
+   Open your terminal/command prompt and run:
+   ```bash
+   python scraper.py
+   ```
+   *This will generate Markdown files (e.g., `articles_YYYY-MM-DD_HHMM.md` and `filtered_YYYY-MM-DD_HHMM.md`) containing the scraped data.*
 
-Open your terminal/command prompt and run:
+2. **View the results:**
+   - Double-click `viewer.html` to open it in your web browser.
+   - Click the **"Open File"** button and select one of the generated `.md` files.
+   - Use the interface to filter by category, switch to **Split View**, or **Export** a standalone HTML file.
 
-```bash
-pip install requests beautifulsoup4 rapidfuzz
-```
+## 🧠 High-Level How it Works
 
-## Usage
+1. **Fetching**: The scraper uses `requests` and `BeautifulSoup` to download and parse HTML from target websites.
+2. **Date Filtering**: It checks the publication date of each article and only keeps those published within a specified timeframe (default is the last 7 days).
+3. **Fuzzy Matching**: It uses `rapidfuzz` to compare article titles and summaries against a predefined list of category keywords. If a match exceeds the confidence threshold (default 70%), the article is tagged with that category.
+4. **Data Formatting**: The extracted data is formatted into structured Markdown files, where tags and sources are appended as metadata.
+5. **Interactive Viewing**: `viewer.html` uses JavaScript to parse the Markdown file locally in the browser, extracting the metadata to build dynamic filters and an interactive UI without requiring a backend server.
 
-### Basic Usage
+## 📡 Sources Involved
 
-```bash
-python scraper.py
-```
+Currently, the scraper is configured to pull from:
+1. **[GOV.UK Blog](https://www.blog.gov.uk/all-posts/)** - General government posts
+2. **[National Audit Office](https://www.nao.org.uk/reports/)** - Independent public spending watchdog reports
+3. **[Institute for Government](https://www.instituteforgovernment.org.uk/)** - Think tank providing policy analysis
+4. **[techUK](https://www.techuk.org/developing-markets/central-government.html)** - Technology trade association (Central Government section)
+5. **[Policy Exchange](https://policyexchange.org.uk/publications/)** - Leading UK think tank publications
 
-### Output Files
+## 🏷️ Keywords We Look For
 
-The script generates timestamped markdown files:
+Articles are categorized into tags based on the following keywords:
 
-| File Pattern | Description |
-|--------------|-------------|
-| `articles_YYYY-MM-DD_HHMM.md` | All articles in Markdown format |
-| `filtered_YYYY-MM-DD_HHMM.md` | Filtered articles (tech/AI/consultancy) in Markdown |
-| `latest.json` | Stores latest filenames for easy discovery |
+- **Tech**: `technology`, `tech`, `digital`, `software`, `cyber`, `data`, `cloud`, `ai`, `machine learning`, `it`
+- **Farming**: `farming`, `agriculture`, `rural`, `defra`, `food`, `crops`, `farmers`
+- **Economic**: `economy`, `economic`, `budget`, `treasury`, `hmrc`, `finance`, `tax`, `spending`, `fiscal`
 
-**Example:**
-- `articles_2026-03-03_0927.md` - All articles from March 3rd, 2026 at 09:27
-- `filtered_2026-03-03_0927.md` - Filtered articles from same run
+*(Note: These can be easily modified in the `KEYWORDS` dictionary within `scraper.py`)*
 
-> **Tip:** Use `viewer.html` to easily browse all articles!
+## 🔮 Future Enhancements
 
-## Using the HTML Viewer
+- **Auto-run scrape**: Implement automation (e.g., using GitHub Actions or a cron job) to run the script on a schedule and fetch the latest articles automatically.
+- **Include more sources**: Expand the list of websites scraped to cover a broader range of government departments, think tanks, and policy blogs.
+- **Widen scope to other industries**: Add new keyword categories and tags for areas such as telecommunications, healthcare, energy, and defense.
 
-Open `viewer.html` in your web browser (double-click or drag into browser).
+## 🤖 Context for AI Tools (Development Notes)
 
-**How to use:**
-1. Run `python scraper.py` to generate article files
-2. Open `viewer.html` in your browser
-3. Click **"Open File"** button
-4. Select a markdown file (e.g., `filtered_2026-03-03_0927.md`)
-5. Use **Filtered/All** buttons to toggle between views
-6. Click article links to open in new tab
+If you are an AI assistant helping to modify this codebase, here is important context:
 
-**Features:**
-- Clean, modern design (shadcn-inspired)
-- Toggle between "All" and "Filtered" views
-- Click article links to open in new tab
-- Works on desktop and mobile
-
-## Configuration
-
-### Adjusting the Time Window
-
-Change `DAYS_TO_SCRAPE` in `scraper.py`:
-
-```python
-DAYS_TO_SCRAPE = 7  # Change to desired number of days
-```
-
-### Adjusting Keywords
-
-Edit the `KEYWORDS` dict in `scraper.py`:
-
-```python
-KEYWORDS = {
-    "tech": ["technology", "tech", "digital", "software", "cyber", "data", "cloud", "ai", "machine learning"],
-    "ai": ["ai", "artificial intelligence", "machine learning", "ml", "automation", "generative", "llm", "deep learning", "neural"],
-    "consultancy": ["consultancy", "consulting", "advisory", "strategy", "consultant"]
-}
-```
-
-### Adjusting Fuzzy Match Threshold
-
-Change `FUZZY_THRESHOLD` (default: 70):
-
-```python
-FUZZY_THRESHOLD = 70  # 0-100, lower = more lenient matching
-```
-
-## Scraped Sources
-
-1. **GOV.UK Blog** - https://www.blog.gov.uk/all-posts/
-2. **National Audit Office** - https://www.nao.org.uk/reports/
-3. **Institute for Government** - https://www.instituteforgovernment.org.uk/
-4. **techUK** - https://www.techuk.org/developing-markets/central-government.html
-5. **Policy Exchange** - https://policyexchange.org.uk/publications/
-
-## Adding New Sources
-
-> **Need help?** If you're not comfortable editing the code yourself, you can use AI assistants to help:
-> - **Opencode** - I'm here to help! Just tell me the URL and I'll add the source for you.
-> - **GitHub Copilot in VS Code** - Start typing a comment like `# scrape new site` and Copilot will suggest code.
-> - **ChatGPT/Claude** - Paste the template below and the URL, and ask them to generate the scraper function.
-
-To add a new source, you need to create a new scraping function in `scraper.py`. Here's the template:
-
-```python
-def scrape_your_source() -> List[Dict]:
-    """Scrape your source name."""
-    url = "https://your-source-url.com/articles"
-    articles = []
-    
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=30)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        
-        # Find article elements - adjust CSS selector for your source
-        for item in soup.select(".article-item, article, .post"):
-            # Extract date - adjust selector
-            date_elem = item.find("time") or item.select_one(".date")
-            
-            # Extract link - adjust selector  
-            link = item.find("a", href=True)
-            
-            if not link:
-                continue
-            
-            # Parse date
-            datetime_val = safe_get_attr(date_elem, "datetime") if date_elem else ""
-            if datetime_val:
-                try:
-                    article_date = datetime.fromisoformat(datetime_val.replace("+00:00", ""))
-                except ValueError:
-                    article_date = parse_date(date_elem.get_text(strip=True)) if date_elem else None
-            else:
-                article_date = parse_date(date_elem.get_text(strip=True)) if date_elem else None
-            
-            # Get title
-            title = link.get_text(strip=True)
-            
-            if title and article_date and is_within_days(article_date):
-                href = safe_get_attr(link, "href")
-                if href and not href.startswith("http"):
-                    href = urljoin(url, href)
-                articles.append({
-                    "date": article_date.strftime("%Y-%m-%d"),
-                    "title": title,
-                    "link": href,
-                    "source": "Your Source Name"
-                })
-    except Exception as e:
-        print(f"Error scraping Your Source: {e}")
-    
-    return articles
-```
-
-Then add your function call in the `main()` function:
-
-```python
-print("Scraping Your Source...")
-all_articles.extend(scrape_your_source())
-```
-
-### Tips for Finding CSS Selectors
-
-1. Visit the website in your browser
-2. Right-click on an article title → Inspect
-3. Note the HTML tag and class names (e.g., `article`, `.post-title`)
-4. Test selectors using browser DevTools (Ctrl+F in Elements panel)
-
-### Common Selectors
-
-| Element | Selector Examples |
-|---------|-------------------|
-| Article | `article`, `.article`, `.post-item` |
-| Title | `h2`, `h3`, `.title`, `.post-title` |
-| Date | `time`, `.date`, `.pub-date` |
-| Link | `a[href]`, `.post-link` |
-
-## Troubleshooting
-
-### "pip is not recognized"
-Use `python -m pip install` instead of `pip install`
-
-### SSL Certificate Errors
-Add this to the top of the script (after imports):
-```python
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
-```
-
-### No articles found
-Some websites may have changed their structure. Check the console output for errors.
-
-## Requirements
-
-- Python 3.7+
-- requests
-- beautifulsoup4
-- rapidfuzz
+- **Architecture**: The project intentionally avoids a backend database or API. Data transport between Python and the UI relies entirely on structured Markdown files.
+- **Parsing Logic**: `viewer.html` has a custom JavaScript Markdown parser (`parseMarkdown()`). It relies on specific formatting conventions generated by the Python script:
+  - Dates must be `## YYYY-MM-DD`
+  - Links must be `- [Title](URL)`
+  - Sources must be indented `*Source: Name*`
+  - Tags must be indented `*Tags: tag1, tag2*`
+- **UI Framework**: The frontend uses raw HTML/CSS/JS without external libraries (no React, no Tailwind), though the CSS is heavily inspired by modern design systems like shadcn/ui. It relies heavily on CSS variables (`:root`) for theming and CSS Grid/Flexbox for layout.
+- **Split View Logic**: The split view uses an iframe. Because many modern sites block iframe embedding via `X-Frame-Options`, fallback "Open in new tab" buttons are explicitly provided. The layout uses `contain: strict` and CSS Flexbox to prevent embedded cookie banners from breaking the parent page layout.

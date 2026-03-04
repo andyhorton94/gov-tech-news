@@ -18,9 +18,9 @@ HEADERS = {
 DAYS_TO_SCRAPE = 7
 
 KEYWORDS = {
-    "tech": ["technology", "tech", "digital", "software", "cyber", "data", "cloud", "ai", "machine learning"],
-    "ai": ["ai", "artificial intelligence", "machine learning", "ml", "automation", "generative", "llm", "deep learning", "neural"],
-    "consultancy": ["consultancy", "consulting", "advisory", "strategy", "consultant"]
+    "tech": ["technology", "tech", "digital", "software", "cyber", "data", "cloud", "ai", "machine learning", "artificial intelligence", "automation", "generative", "llm", "deep learning", "neural", "ml", "software", "it", "information technology", "computer", "computing", "robotics", "automation", "smart", "innovation", "r&d", "research and development"],
+    "farming": ["farming", "farm", "farms", "rural", "agriculture", "agricultural", "countryside", "food", "food security", "rural affairs", "environment", "environmental", "climate", "carbon", "net zero", "sustainability", "sustainable", "wildlife", "nature", "conservation", "fishing", "fisheries", "forestry", "woodland", "crops", "livestock", "cattle", "sheep"],
+    "economic": ["economic", "economy", "budget", "fiscal", "tax", "spending", "gdp", "growth", "inflation", "treasury", "finance", "financial", "investment", "bank", "banking", "interest rate", "monetary", "pound", "sterling", "public sector", "government spending", "deficit", "debt", "productivity", "trade", "exports", "imports", "business", "enterprise", "smb", "smes", "startup", "jobs", "employment", "wages", "salary", "living wage", "cost of living", "cost of living crisis", "energy prices", "energy crisis"]
 }
 
 FUZZY_THRESHOLD = 70
@@ -65,16 +65,19 @@ def safe_get_attr(element, attr: str, default: str = "") -> str:
     return str(val) if val else default
 
 
-def matches_keywords(title: str) -> bool:
-    """Check if title matches any keyword using fuzzy matching."""
+def get_article_tags(title: str) -> List[str]:
+    """Get tags for an article based on keyword matching."""
     title_lower = title.lower()
+    tags = []
     for category, keywords in KEYWORDS.items():
         for keyword in keywords:
             score = fuzz.ratio(keyword.lower(), title_lower)
             partial_score = fuzz.partial_ratio(keyword.lower(), title_lower)
             if score >= FUZZY_THRESHOLD or partial_score >= FUZZY_THRESHOLD + 10:
-                return True
-    return False
+                if category not in tags:
+                    tags.append(category)
+                break
+    return tags
 
 
 def generate_markdown(articles: List[Dict], title: str) -> str:
@@ -88,7 +91,11 @@ def generate_markdown(articles: List[Dict], title: str) -> str:
             current_date = article["date"]
             markdown += f"## {current_date}\n\n"
         markdown += f"- [{article['title']}]({article['link']})  \n"
-        markdown += f"  *Source: {article['source']}*\n\n"
+        markdown += f"  *Source: {article['source']}*"
+        if article.get("tags"):
+            tags_str = ", ".join(article["tags"])
+            markdown += f"\n  *Tags: {tags_str}*"
+        markdown += "\n\n"
     
     return markdown
 
@@ -352,18 +359,21 @@ def main():
     
     all_articles.sort(key=lambda x: x["date"], reverse=True)
     
+    for article in all_articles:
+        article["tags"] = get_article_tags(article["title"])
+    
     print()
     print("=" * 60)
     print(f"Total articles found: {len(all_articles)}")
+    
+    tagged_count = sum(1 for a in all_articles if a["tags"])
+    print(f"Articles with tags: {tagged_count}")
     print("=" * 60)
     print()
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     
     markdown_output = generate_markdown(all_articles, "UK Government & Policy News")
-    
-    filtered_articles = [a for a in all_articles if matches_keywords(a["title"])]
-    filtered_markdown = generate_markdown(filtered_articles, "Filtered: Tech, AI & Consultancy News")
     
     print(markdown_output)
     
@@ -372,15 +382,9 @@ def main():
         f.write(markdown_output)
     print(f"Markdown saved to {output_md}")
     
-    filtered_md = f"filtered_{timestamp}.md"
-    with open(filtered_md, "w", encoding="utf-8") as f:
-        f.write(filtered_markdown)
-    print(f"Filtered markdown saved to {filtered_md} ({len(filtered_articles)} articles)")
-    
     import json
     latest_info = {
         "latest_all": output_md,
-        "latest_filtered": filtered_md,
         "timestamp": timestamp
     }
     with open("latest.json", "w") as f:

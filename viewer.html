@@ -1540,6 +1540,17 @@ ${preview}</pre>
         .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
         .source-filter { padding: 6px 22px 6px 10px; font-size: 13px; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--border); background-color: var(--background-secondary); color: var(--foreground); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 6px center; max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
         .source-filter:hover { border-color: var(--border-hover); }
+        .filter-buttons { display: inline-flex; gap: 4px; padding: 4px; background: var(--background-secondary); border: 1px solid var(--border); border-radius: var(--radius); }
+        .filter-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500; border: none; background: transparent; color: var(--foreground-muted); border-radius: 4px; cursor: pointer; transition: all 0.15s ease; }
+        .filter-btn:hover { color: var(--foreground); }
+        .filter-btn.active { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .filter-count { font-size: 11px; background: var(--border); padding: 1px 5px; border-radius: 10px; color: var(--foreground-muted); }
+        .filter-btn.active .filter-count { background: var(--primary); color: white; }
+        .article-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+        .tag { display: inline-block; padding: 2px 8px; font-size: 11px; font-weight: 500; border-radius: 12px; background: var(--background-secondary); color: var(--foreground-muted); text-transform: capitalize; }
+        .tag-tech { background: #e0f2fe; color: #0369a1; }
+        .tag-farming { background: #dcfce7; color: #15803d; }
+        .tag-economic { background: #fef3c7; color: #b45309; }
         body.split-mode { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         body.split-mode .header { flex-shrink: 0; }
         body.split-mode .split-container { display: flex; flex: 1; height: 100%; }
@@ -1604,6 +1615,12 @@ ${preview}</pre>
             <select id="sourceFilter" class="source-filter" title="Filter by source">
                 <option value="all">All Sources</option>
             </select>
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" data-filter="all">All <span class="filter-count" id="count-all"></span></button>
+                <button class="filter-btn" data-filter="tech">Tech <span class="filter-count" id="count-tech"></span></button>
+                <button class="filter-btn" data-filter="farming">Farming <span class="filter-count" id="count-farming"></span></button>
+                <button class="filter-btn" data-filter="economic">Economic <span class="filter-count" id="count-economic"></span></button>
+            </div>
             <div class="view-toggle" id="viewToggle">
                 <button class="view-toggle-btn active" id="viewList" title="List View">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -1660,6 +1677,7 @@ ${preview}</pre>
         const articles = ${articlesJson};
         let viewMode = localStorage.getItem('viewMode') || 'list';
         let currentSourceFilter = 'all';
+        let currentFilter = 'all';
         let currentUrl = '';
         
         const viewList = document.getElementById('viewList');
@@ -1673,6 +1691,7 @@ ${preview}</pre>
         const contentPlaceholder = document.getElementById('contentPlaceholder');
         const articlesList = document.getElementById('articlesList');
         const sourceFilterSelect = document.getElementById('sourceFilter');
+        const filterButtons = document.querySelectorAll('.filter-btn');
         
         // Extract unique sources and populate dropdown
         const uniqueSources = new Set();
@@ -1688,8 +1707,36 @@ ${preview}</pre>
         });
         sourceFilterSelect.innerHTML = optionsHtml;
         
+        function updateFilterCounts() {
+            const sourceFilteredArticles = currentSourceFilter === 'all' 
+                ? articles 
+                : articles.map(s => ({...s, articles: s.articles.filter(a => a.source === currentSourceFilter)}));
+                
+            const totalArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.length, 0);
+            const techArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('tech')).length, 0);
+            const farmArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('farming')).length, 0);
+            const econArticles = sourceFilteredArticles.reduce((sum, s) => sum + s.articles.filter(a => a.tags && a.tags.includes('economic')).length, 0);
+            
+            document.getElementById('count-all').textContent = totalArticles;
+            document.getElementById('count-tech').textContent = techArticles;
+            document.getElementById('count-farming').textContent = farmArticles;
+            document.getElementById('count-economic').textContent = econArticles;
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+                filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === currentFilter));
+                renderList();
+                if (viewMode === 'split') {
+                    renderSidebar();
+                }
+            });
+        });
+        
         sourceFilterSelect.addEventListener('change', (e) => {
             currentSourceFilter = e.target.value;
+            updateFilterCounts();
             renderList();
             if (viewMode === 'split') {
                 renderSidebar();
@@ -1730,15 +1777,20 @@ ${preview}</pre>
         function renderList() {
             let html = '';
             for (const section of articles) {
-                const filteredArticles = currentSourceFilter === 'all' 
-                    ? section.articles 
-                    : section.articles.filter(a => a.source === currentSourceFilter);
+                const filteredArticles = section.articles.filter(a => {
+                    const matchesSource = currentSourceFilter === 'all' || a.source === currentSourceFilter;
+                    const matchesCategory = currentFilter === 'all' || (a.tags && a.tags.includes(currentFilter));
+                    return matchesSource && matchesCategory;
+                });
                     
                 if (filteredArticles.length === 0) continue;
                 
                 html += '<div class="date-section"><div class="date-header">' + formatDate(section.date) + '</div><div class="articles">';
                 for (const article of filteredArticles) {
-                    html += '<div class="article-item"><div class="article-content"><div class="article-title"><a href="' + article.url + '" target="_blank">' + article.title + '</a></div><div class="article-meta">' + article.source + '</div></div><div class="article-link"><a href="' + article.url + '" target="_blank">View</a></div></div>';
+                    const tagsHtml = article.tags && article.tags.length > 0 
+                        ? '<div class="article-tags">' + article.tags.map(t => '<span class="tag tag-' + t + '">' + t + '</span>').join('') + '</div>' 
+                        : '';
+                    html += '<div class="article-item"><div class="article-content"><div class="article-title"><a href="' + article.url + '" target="_blank">' + article.title + '</a></div><div class="article-meta">' + article.source + '</div>' + tagsHtml + '</div><div class="article-link"><a href="' + article.url + '" target="_blank">View</a></div></div>';
                 }
                 html += '</div></div>';
             }
@@ -1750,9 +1802,11 @@ ${preview}</pre>
             let html = '';
             let count = 0;
             for (const section of articles) {
-                const filteredArticles = currentSourceFilter === 'all' 
-                    ? section.articles 
-                    : section.articles.filter(a => a.source === currentSourceFilter);
+                const filteredArticles = section.articles.filter(a => {
+                    const matchesSource = currentSourceFilter === 'all' || a.source === currentSourceFilter;
+                    const matchesCategory = currentFilter === 'all' || (a.tags && a.tags.includes(currentFilter));
+                    return matchesSource && matchesCategory;
+                });
                     
                 for (const article of filteredArticles) {
                     count++;
@@ -1762,7 +1816,10 @@ ${preview}</pre>
             }
             if (html === '') html = '<div class="sidebar-empty">No articles found</div>';
             sidebarContent.innerHTML = html;
-            sidebarSubtitle.textContent = count + ' articles';
+            
+            const filterLabels = { all: 'All', tech: 'Tech', farming: 'Farming', economic: 'Economic' };
+            const filterLabel = filterLabels[currentFilter] || 'All';
+            sidebarSubtitle.textContent = count + ' ' + filterLabel.toLowerCase() + ' articles';
             
             document.querySelectorAll('.sidebar-article').forEach(el => {
                 el.addEventListener('click', () => {
@@ -1795,6 +1852,7 @@ ${preview}</pre>
             if (currentUrl) window.open(currentUrl, '_blank');
         });
         
+        updateFilterCounts();
         renderList();
         initViewMode();
     <\/script>

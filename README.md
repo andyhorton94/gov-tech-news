@@ -1,4 +1,4 @@
-# UK Government & Policy News Scraper
+# UK Government News Scraper
 
 A Python automation tool that scrapes, categorizes, and provides an interactive viewing experience for news articles from various UK government and policy websites.
 

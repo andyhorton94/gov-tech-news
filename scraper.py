@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UK Government & Policy News Scraper
+UK Government News Scraper
 Scrapes articles from the last 7 days from various UK government/policy websites.
 """
 
@@ -321,7 +321,7 @@ def scrape_policy_exchange() -> List[Dict]:
 def main():
     """Main function to scrape all sources and output results."""
     print("=" * 60)
-    print("UK Government & Policy News Scraper")
+    print("UK Government News Scraper")
     print(f"Scraping articles from the last {DAYS_TO_SCRAPE} days")
     print("=" * 60)
     print()
@@ -373,7 +373,7 @@ def main():
     
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     
-    markdown_output = generate_markdown(all_articles, "UK Government & Policy News")
+    markdown_output = generate_markdown(all_articles, "UK Government News")
     
     print(markdown_output)
     
